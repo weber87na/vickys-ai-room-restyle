@@ -333,8 +333,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 18px;
-      background: rgba(34, 23, 16, 0.58);
+      background: #000;
       z-index: 20;
     }
 
@@ -343,20 +342,28 @@
     }
 
     .camera-panel {
-      width: min(560px, 100%);
-      background: rgba(255, 252, 253, 0.98);
-      border-radius: 28px;
-      border: 1px solid rgba(186, 153, 166, 0.15);
-      box-shadow: 0 28px 80px rgba(105, 60, 77, 0.15);
-      padding: 18px;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .camera-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 14px;
+      padding: 20px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+      z-index: 10;
+      color: white;
     }
 
     .camera-header h3 {
@@ -364,29 +371,48 @@
     }
 
     .camera-close {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
-      background: rgba(186, 153, 166, 0.1);
-      color: var(--text);
-      font-size: 22px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
       line-height: 1;
+      backdrop-filter: blur(8px);
     }
 
     .camera-video {
       width: 100%;
-      aspect-ratio: 4 / 3;
-      border-radius: 20px;
+      height: 100%;
       object-fit: cover;
-      background: #2b2326;
-      border: 1px solid rgba(186, 153, 166, 0.15);
+      background: #000;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
     }
 
     .camera-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 14px;
+      gap: 16px;
+      padding: 32px 20px 48px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      z-index: 10;
+    }
+
+    .camera-actions .ghost-button {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .camera-actions .primary-button {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .camera-canvas {
