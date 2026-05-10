@@ -283,6 +283,7 @@ async function generateImage() {
             const formData = new FormData()
             formData.append("model", model)
             formData.append("image", file)
+            formData.append("quality", "low")
             formData.append("n", "1")
             formData.append("prompt", `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:\n\n${fullPrompt}\n\nMaintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. \nAVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`)
             formData.append("size", "1024x1024")
@@ -298,6 +299,8 @@ async function generateImage() {
             const formData = new FormData()
             formData.append("model", model)
             formData.append("image", file)
+            formData.append("quality", "low")
+            formData.append("n", "1")
             formData.append("prompt", `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:\n\n${fullPrompt}\n\nMaintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. AVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`)
             formData.append("size", "1024x1024")
             response = await fetch("https://api.openai.com/v1/images/edits", {
