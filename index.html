@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+  <title>AI Room Style Transfer</title>
+
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --panel: rgba(255, 250, 243, 0.92);
+      --panel-strong: #fffaf4;
+      --text: #2a211b;
+      --muted: #786a5d;
+      --line: rgba(103, 80, 61, 0.18);
+      --accent: #c96f3b;
+      --accent-strong: #9f4f24;
+      --accent-soft: #f6dfcd;
+      --shadow: 0 18px 50px rgba(77, 49, 28, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 214, 179, 0.85), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(232, 190, 154, 0.55), transparent 30%),
+        linear-gradient(160deg, #f7f0e8 0%, #efe4d7 52%, #e5d6c4 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin-top: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(201, 111, 59, 0.6);
+      box-shadow: 0 0 0 4px rgba(201, 111, 59, 0.12);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(103, 80, 61, 0.18);
+      background: linear-gradient(135deg, #e8ddd0, #f8f3ec);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .hero {
+      padding: 28px 20px 12px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 250, 244, 0.7);
+      border: 1px solid rgba(103, 80, 61, 0.12);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      margin-top: 14px;
+      font-size: clamp(32px, 7vw, 56px);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin-top: 14px;
+      max-width: 640px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 0 0 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(103, 80, 61, 0.12);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      padding: 22px;
+    }
+
+    .section+.section {
+      margin-top: 22px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .section-header h3 {
+      font-size: 15px;
+    }
+
+    .section-header span,
+    .helper-text,
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .upload-actions,
+    .provider-grid,
+    .config-grid,
+    .action-row,
+    .preset-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .upload-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .provider-grid,
+    .config-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .field.hidden {
+      display: none;
+    }
+
+    .ghost-button,
+    .primary-button,
+    .preset-button {
+      min-height: 48px;
+      border-radius: 16px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .ghost-button,
+    .preset-button {
+      border: 1px solid rgba(103, 80, 61, 0.14);
+      background: rgba(255, 255, 255, 0.76);
+      color: var(--text);
+    }
+
+    .primary-button {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+      color: white;
+      padding: 15px 22px;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 14px 28px rgba(159, 79, 36, 0.28);
+    }
+
+    .ghost-button {
+      padding: 14px 16px;
+      font-weight: 600;
+    }
+
+    .preset-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .preset-button {
+      text-align: left;
+      padding: 14px;
+    }
+
+    .preset-button strong,
+    .preset-button span {
+      display: block;
+    }
+
+    .preset-button strong {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .preset-button span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .preset-button.active {
+      background: var(--accent-soft);
+      border-color: rgba(201, 111, 59, 0.5);
+      box-shadow: inset 0 0 0 1px rgba(201, 111, 59, 0.16);
+    }
+
+    .ghost-button:hover,
+    .primary-button:hover,
+    .preset-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .results {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .image-card {
+      padding: 14px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(103, 80, 61, 0.12);
+    }
+
+    .image-card h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .placeholder {
+      display: grid;
+      place-items: center;
+      min-height: 220px;
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+      line-height: 1.7;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .camera-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(34, 23, 16, 0.58);
+      z-index: 20;
+    }
+
+    .camera-modal.open {
+      display: flex;
+    }
+
+    .camera-panel {
+      width: min(560px, 100%);
+      background: rgba(255, 250, 243, 0.98);
+      border-radius: 28px;
+      border: 1px solid rgba(103, 80, 61, 0.12);
+      box-shadow: 0 28px 80px rgba(34, 23, 16, 0.24);
+      padding: 18px;
+    }
+
+    .camera-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .camera-header h3 {
+      font-size: 18px;
+    }
+
+    .camera-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: rgba(103, 80, 61, 0.08);
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .camera-video {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 20px;
+      object-fit: cover;
+      background: #201a16;
+      border: 1px solid rgba(103, 80, 61, 0.14);
+    }
+
+    .camera-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .camera-canvas {
+      display: none;
+    }
+
+    .status {
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    /* 燈箱大圖功能 */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: zoom-out;
+      padding: 20px;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border: none;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      border-radius: 8px;
+    }
+
+    .image-card img {
+      cursor: zoom-in;
+    }
+
+    @media (min-width: 720px) {
+      .page {
+        width: min(1200px, calc(100% - 48px));
+        padding-top: 28px;
+      }
+
+      .hero {
+        padding: 24px 12px 18px;
+      }
+
+      .upload-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .provider-grid,
+      .config-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 980px) {
+      .layout {
+        grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+        display: grid;
+        align-items: start;
+      }
+
+      .results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <section class="hero">
+      <div class="eyebrow">AI Room Restyle</div>
+      <h1>拍一張房間照，快速切換不同空間風格</h1>
+      <p>
+        支援手機拍照與相簿上傳，保留原始空間格局，直接生成不同風格的室內設計提案。
+      </p>
+    </section>
+
+    <main class="layout">
+
+      <section class="panel controls">
+
+        <div class="section">
+          <div class="section-header">
+            <h3>模型服務</h3>
+            <span>OpenAI 或 Azure OpenAI</span>
+          </div>
+
+          <div class="provider-grid">
+            <div class="field">
+              <label for="providerSelect">Provider</label>
+              <select id="providerSelect">
+                <option value="openai" selected>OpenAI</option>
+                <option value="azure">Azure OpenAI</option>
+              </select>
+            </div>
+
+            <!-- 移除模型選擇，下方程式直接寫死 gpt-image-2 -->
+          </div>
+
+          <div class="config-grid">
+            <div class="field hidden" id="azureEndpointField"></div>
+            <div class="field hidden" id="azureDeploymentField"></div>
+            <div class="field hidden" id="azureApiVersionField"></div>
+          </div>
+
+          <p class="helper-text">切換到 Azure OpenAI 時，系統會自動使用你指定的固定 Azure 路徑，你只需要填入 API Key。</p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>OpenAI API Key</h3>
+            <span id="apiKeyHint">只會用在這次請求</span>
+          </div>
+
+          <div style="display:flex;align-items:center;position:relative;">
+            <input type="password"
+              id="apiKeyInput"
+              placeholder="貼上你的 OpenAI API Key"
+              style="padding-right:44px; flex: 1;" />
+            <button type="button" id="toggleApiKey" aria-label="顯示/隱藏 API Key" style="position:absolute;right:8px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;height:100%;">
+              <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#786a5d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>房間照片</h3>
+            <span>手機可直接拍照</span>
+          </div>
+
+          <div class="upload-actions">
+            <button type="button"
+              class="ghost-button"
+              id="cameraButton">
+              立即拍照
+            </button>
+            <button type="button"
+              class="ghost-button"
+              id="uploadButton">
+              從相簿上傳
+            </button>
+          </div>
+
+          <input type="file"
+            id="imageInput"
+            class="hidden-input"
+            accept="image/*" />
+
+          <input type="file"
+            id="cameraInput"
+            class="hidden-input"
+            accept="image/*"
+            capture="environment" />
+
+          <p class="helper-text">支援 JPG、PNG。相機按鈕在大多數手機瀏覽器會直接開啟後鏡頭。</p>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>快速風格</h3>
+            <span>可先選一種，再微調描述</span>
+          </div>
+
+          <div class="preset-grid"
+            id="presetGrid">
+            <button type="button"
+              class="preset-button active"
+              data-preset="modern-luxe">
+              <strong>現代奢華</strong>
+              <span>暖色石材、金屬細節、層次燈光</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="minimal-japandi">
+              <strong>日式侘寂</strong>
+              <span>木質、留白、柔和自然光</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="scandinavian-bright">
+              <strong>北歐清新</strong>
+              <span>淺木色、明亮白牆、簡潔家具</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="industrial-loft">
+              <strong>工業 Loft</strong>
+              <span>清水模、黑鐵件、都會感家具</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="coastal-relax">
+              <strong>海岸渡假</strong>
+              <span>奶油白、藤編、放鬆度假氛圍</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="future-smart">
+              <strong>未來智能</strong>
+              <span>科技燈帶、俐落線條、智慧家居</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h3>自訂描述</h3>
+            <span>補充你想保留或強化的感覺</span>
+          </div>
+
+          <textarea
+            id="promptInput">warm neutral palette, layered lighting, premium materials, custom furniture, cozy hotel-like atmosphere</textarea>
+        </div>
+
+        <div class="section action-row">
+          <button type="button"
+            class="primary-button"
+            id="generateButton">
+            生成風格圖
+          </button>
+          <div class="status"
+            id="statusText"></div>
+        </div>
+
+      </section>
+
+      <section class="panel results">
+
+        <div class="image-card">
+          <h2>原始圖片</h2>
+          <img id="previewImage" alt="原始房間照片預覽" style="display:none">
+          <div class="placeholder"
+            id="previewPlaceholder">尚未選擇圖片，請直接拍照或從相簿上傳。</div>
+        </div>
+
+        <div class="image-card">
+          <h2>AI 結果</h2>
+          <img id="resultImage" alt="AI 風格轉換結果" style="display:none">
+          <div class="placeholder"
+            id="resultPlaceholder">生成完成後，新的風格提案會顯示在這裡。</div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div class="camera-modal" id="cameraModal" aria-hidden="true">
+    <div class="camera-panel">
+      <!-- ...existing code... -->
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox">
+    <img id="lightboxImg" src="" alt="放大圖片">
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
