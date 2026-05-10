@@ -175,6 +175,10 @@ function updatePreview(file) {
         resultImage.removeAttribute("src")
         resultImage.style.display = "none"
     }
+    const downloadButton = document.getElementById("downloadButton")
+    if (downloadButton) {
+        downloadButton.style.display = "none"
+    }
     if (resultPlaceholder) resultPlaceholder.style.display = "grid"
     setStatus(`已選擇圖片：${file.name || "相機照片"}`)
 }
@@ -360,6 +364,10 @@ async function generateImage() {
         if (resultImage) {
             resultImage.src = `data:image/png;base64,${base64Image}`
             resultImage.style.display = "block"
+        }
+        const downloadButton = document.getElementById("downloadButton")
+        if (downloadButton) {
+            downloadButton.style.display = "block"
         }
         if (resultPlaceholder) resultPlaceholder.style.display = "none"
         setStatus("生成完成，可以再切換其他風格繼續嘗試。")

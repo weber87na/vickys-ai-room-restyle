@@ -529,11 +529,11 @@
             <span id="apiKeyHint">只會用在這次請求</span>
           </div>
 
-          <div style="display:flex;align-items:center;position:relative;">
+          <div style="display:flex;align-items:center;position:relative;margin-top:10px;">
             <input type="password"
               id="apiKeyInput"
               placeholder="貼上你的 OpenAI API Key"
-              style="padding-right:44px; flex: 1;" />
+              style="padding-right:44px; flex: 1; margin-top: 0;" />
             <button type="button" id="toggleApiKey" aria-label="顯示/隱藏 API Key" style="position:absolute;right:8px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;height:100%;">
               <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#967d87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
             </button>
@@ -708,6 +708,7 @@
           <h2>AI 結果</h2>
           <img id="resultImage" alt="AI 風格轉換結果" style="display:none">
             <button type="button" id="downloadButton" class="ghost-button" style="display:none; margin-top: 12px; width: 100%;">儲存圖片</button>
+        </div>
 
       </section>
 
