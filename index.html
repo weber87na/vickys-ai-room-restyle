@@ -6,19 +6,23 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0" />
   <title>AI Room Style Transfer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #f4efe7;
-      --panel: rgba(255, 250, 243, 0.92);
-      --panel-strong: #fffaf4;
-      --text: #2a211b;
-      --muted: #786a5d;
-      --line: rgba(103, 80, 61, 0.18);
-      --accent: #c96f3b;
-      --accent-strong: #9f4f24;
-      --accent-soft: #f6dfcd;
-      --shadow: 0 18px 50px rgba(77, 49, 28, 0.12);
+      --bg: #fdf5f6;
+      --panel: rgba(255, 252, 253, 0.94);
+      --panel-strong: #ffffff;
+      --text: #4a3b40;
+      --muted: #967d87;
+      --line: rgba(186, 153, 166, 0.2);
+      --accent: #d88fa4;
+      --accent-strong: #bf6d86;
+      --accent-soft: #f9e6eb;
+      --shadow: 0 18px 50px rgba(105, 60, 77, 0.08);
       --radius-xl: 28px;
       --radius-lg: 20px;
       --radius-md: 14px;
@@ -28,11 +32,11 @@
       margin: 0;
       min-height: 100vh;
       color: var(--text);
-      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      font-family: "Noto Serif TC", "PMingLiU", serif;
       background:
-        radial-gradient(circle at top left, rgba(255, 214, 179, 0.85), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(232, 190, 154, 0.55), transparent 30%),
-        linear-gradient(160deg, #f7f0e8 0%, #efe4d7 52%, #e5d6c4 100%);
+        radial-gradient(circle at top left, rgba(255, 214, 226, 0.85), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(235, 195, 212, 0.55), transparent 30%),
+        linear-gradient(160deg, #fdf5f6 0%, #f6e8ec 52%, #eed7e0 100%);
     }
 
     * {
@@ -54,7 +58,7 @@
       margin-top: 10px;
       border-radius: var(--radius-md);
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       color: var(--text);
       font: inherit;
       outline: none;
@@ -64,8 +68,8 @@
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: rgba(201, 111, 59, 0.6);
-      box-shadow: 0 0 0 4px rgba(201, 111, 59, 0.12);
+      border-color: rgba(216, 143, 164, 0.6);
+      box-shadow: 0 0 0 4px rgba(216, 143, 164, 0.12);
     }
 
     textarea {
@@ -85,8 +89,8 @@
       object-fit: cover;
       display: block;
       border-radius: 18px;
-      border: 1px solid rgba(103, 80, 61, 0.18);
-      background: linear-gradient(135deg, #e8ddd0, #f8f3ec);
+      border: 1px solid rgba(186, 153, 166, 0.15);
+      background: linear-gradient(135deg, #eee3e6, #fdf5f6);
     }
 
     .page {
@@ -105,8 +109,8 @@
       gap: 8px;
       padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(255, 250, 244, 0.7);
-      border: 1px solid rgba(103, 80, 61, 0.12);
+      background: rgba(255, 252, 253, 0.7);
+      border: 1px solid rgba(186, 153, 166, 0.2);
       color: var(--muted);
       font-size: 13px;
       letter-spacing: 0.04em;
@@ -137,7 +141,7 @@
     .panel {
       background: var(--panel);
       backdrop-filter: blur(18px);
-      border: 1px solid rgba(103, 80, 61, 0.12);
+      border: 1px solid rgba(186, 153, 166, 0.15);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
     }
@@ -202,7 +206,7 @@
 
     .ghost-button,
     .preset-button {
-      border: 1px solid rgba(103, 80, 61, 0.14);
+      border: 1px solid rgba(186, 153, 166, 0.2);
       background: rgba(255, 255, 255, 0.76);
       color: var(--text);
     }
@@ -214,6 +218,13 @@
       font-size: 16px;
       font-weight: 700;
       box-shadow: 0 14px 28px rgba(159, 79, 36, 0.28);
+    }
+    
+    .primary-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none;
     }
 
     .ghost-button {
@@ -248,8 +259,8 @@
 
     .preset-button.active {
       background: var(--accent-soft);
-      border-color: rgba(201, 111, 59, 0.5);
-      box-shadow: inset 0 0 0 1px rgba(201, 111, 59, 0.16);
+      border-color: rgba(216, 143, 164, 0.4);
+      box-shadow: inset 0 0 0 1px rgba(216, 143, 164, 0.16);
     }
 
     .ghost-button:hover,
@@ -268,7 +279,7 @@
       padding: 14px;
       border-radius: 22px;
       background: var(--panel-strong);
-      border: 1px solid rgba(103, 80, 61, 0.12);
+      border: 1px solid rgba(186, 153, 166, 0.15);
     }
 
     .image-card h2 {
@@ -307,10 +318,10 @@
 
     .camera-panel {
       width: min(560px, 100%);
-      background: rgba(255, 250, 243, 0.98);
+      background: rgba(255, 252, 253, 0.98);
       border-radius: 28px;
-      border: 1px solid rgba(103, 80, 61, 0.12);
-      box-shadow: 0 28px 80px rgba(34, 23, 16, 0.24);
+      border: 1px solid rgba(186, 153, 166, 0.15);
+      box-shadow: 0 28px 80px rgba(105, 60, 77, 0.15);
       padding: 18px;
     }
 
@@ -330,7 +341,7 @@
       width: 40px;
       height: 40px;
       border-radius: 999px;
-      background: rgba(103, 80, 61, 0.08);
+      background: rgba(186, 153, 166, 0.1);
       color: var(--text);
       font-size: 22px;
       line-height: 1;
@@ -341,8 +352,8 @@
       aspect-ratio: 4 / 3;
       border-radius: 20px;
       object-fit: cover;
-      background: #201a16;
-      border: 1px solid rgba(103, 80, 61, 0.14);
+      background: #2b2326;
+      border: 1px solid rgba(186, 153, 166, 0.15);
     }
 
     .camera-actions {
@@ -480,7 +491,7 @@
               placeholder="貼上你的 OpenAI API Key"
               style="padding-right:44px; flex: 1;" />
             <button type="button" id="toggleApiKey" aria-label="顯示/隱藏 API Key" style="position:absolute;right:8px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;height:100%;">
-              <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#786a5d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
+              <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#967d87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
             </button>
           </div>
         </div>
@@ -562,6 +573,54 @@
               <strong>未來智能</strong>
               <span>科技燈帶、俐落線條、智慧家居</span>
             </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="vintage-retro">
+              <strong>復古懷舊</strong>
+              <span>世紀中期家具、溫暖色調、經典圖案</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="bohemian-chic">
+              <strong>波西米亞</strong>
+              <span>豐富色彩、編織元素、室內植栽</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="cyberpunk-neon">
+              <strong>賽博龐克</strong>
+              <span>霓虹光影、暗色金屬、高科技感</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="zen-meditation">
+              <strong>禪意空間</strong>
+              <span>榻榻米、竹製元素、極簡靜謐</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="french-chic">
+              <strong>法式優雅</strong>
+              <span>古典線板、水晶吊燈、絲絨家具</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="wabi-sabi">
+              <strong>寂靜自然</strong>
+              <span>質樸有機、不對稱美、靜謐色調</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="modern-farmhouse">
+              <strong>現代農莊</strong>
+              <span>木質屋樑、白牆搭黑鐵、舒適溫馨</span>
+            </button>
+            <button type="button"
+              class="preset-button"
+              data-preset="pastel-dream">
+              <strong>粉彩夢境</strong>
+              <span>馬卡龍色系、圓潤家具、夢幻趣味</span>
+            </button>
           </div>
         </div>
 
@@ -611,7 +670,16 @@
 
   <div class="camera-modal" id="cameraModal" aria-hidden="true">
     <div class="camera-panel">
-      <!-- ...existing code... -->
+      <div class="camera-header">
+        <h3>拍攝房間照片</h3>
+        <button type="button" class="camera-close" id="cameraCloseButton">&times;</button>
+      </div>
+      <video class="camera-video" id="cameraPreview" autoplay playsinline></video>
+      <canvas class="camera-canvas" id="cameraCanvas"></canvas>
+      <div class="camera-actions">
+        <button type="button" class="ghost-button" id="fallbackUploadButton">改從相簿上傳</button>
+        <button type="button" class="primary-button" id="capturePhotoButton">拍照</button>
+      </div>
     </div>
   </div>
 

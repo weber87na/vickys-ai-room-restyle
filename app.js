@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', function() {
             apiKeyVisible = !apiKeyVisible;
             apiKeyInput.type = apiKeyVisible ? 'text' : 'password';
             if (apiKeyVisible) {
-                eyeIcon.innerHTML = '<ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/><line x1="4" y1="20" x2="20" y2="4" stroke="#c96f3b" stroke-width="2"/>';
+                eyeIcon.innerHTML = '<ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/><line x1="4" y1="20" x2="20" y2="4" stroke="#d88fa4" stroke-width="2"/>';
             } else {
                 eyeIcon.innerHTML = '<ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/>';
             }
@@ -94,7 +94,15 @@ const presetPrompts = {
     "scandinavian-bright": "Scandinavian interior design, bright natural daylight, white walls, light oak furniture, airy and functional composition",
     "industrial-loft": "industrial loft interior, concrete texture, matte black metal, moody lighting, urban furniture styling, sophisticated raw materials",
     "coastal-relax": "coastal resort interior, breezy natural light, off-white and sand palette, woven textures, relaxed elegant styling",
-    "future-smart": "futuristic smart home interior, integrated ambient LED lighting, sleek surfaces, premium tech furniture, cinematic modern atmosphere"
+    "future-smart": "futuristic smart home interior, integrated ambient LED lighting, sleek surfaces, premium tech furniture, cinematic modern atmosphere",
+    "vintage-retro": "vintage retro interior, mid-century modern furniture, warm nostalgic tones, classic patterns, cozy ambiance",
+    "bohemian-chic": "bohemian chic interior, eclectic decor, vibrant colors, macrame, abundant indoor plants, relaxed cozy vibe",
+    "cyberpunk-neon": "cyberpunk neon interior, dark moody aesthetics, glowing neon accents, high-tech elements, futuristic metallic surfaces",
+    "zen-meditation": "zen meditation space, completely uncluttered, tatami mats, bamboo sliding doors, soft diffused sunlight, ultimate peacefulness",
+    "french-chic": "french chic interior, elegant Parisian apartment, ornate wall moldings, vintage chandelier, velvet furniture, romantic and sophisticated",
+    "wabi-sabi": "wabi-sabi interior, rustic beauty, imperfect organic textures, earthy tones, raw natural materials, calm and spiritual",
+    "modern-farmhouse": "modern farmhouse interior, rustic charm meets contemporary design, shiplap walls, exposed wooden beams, cozy and welcoming",
+    "pastel-dream": "pastel dream interior, soft candy colors, rounded fluffy furniture, playful and dreamy atmosphere, whimsical decor"
 }
 
 let selectedFile = null
@@ -282,7 +290,12 @@ async function generateImage() {
             const jsonBody = {
                 model,
                 image: imageBase64,
-                prompt: `\nTransform this room into:\n\n${fullPrompt}\n\nKeep:\n- same room layout\n- same architecture\n- same windows\n- same perspective\n\nOnly change:\n- furniture\n- materials\n- lighting\n- decoration\n\nultra realistic,\nphotorealistic,\ninterior design,\narchitecture visualization,\n4k\n`,
+                prompt: `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:
+
+${fullPrompt}
+
+Maintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. 
+AVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`,
                 size: "1024x1024"
             }
 
@@ -298,7 +311,7 @@ async function generateImage() {
             const formData = new FormData()
             formData.append("model", model)
             formData.append("image", file)
-            formData.append("prompt", `\nTransform this room into:\n\n${fullPrompt}\n\nKeep:\n- same room layout\n- same architecture\n- same windows\n- same perspective\n\nOnly change:\n- furniture\n- materials\n- lighting\n- decoration\n\nultra realistic,\nphotorealistic,\ninterior design,\narchitecture visualization,\n4k\n`)
+            formData.append("prompt", `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:\n\n${fullPrompt}\n\nMaintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. AVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`)
             formData.append("size", "1024x1024")
             response = await fetch("https://api.openai.com/v1/images/edits", {
                 method: "POST",
