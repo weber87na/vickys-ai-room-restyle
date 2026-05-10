@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const providerSelect = document.getElementById("providerSelect")
     const generateButton = document.getElementById("generateButton")
     const presetButtons = document.querySelectorAll(".preset-button")
+    const downloadButton = document.getElementById("downloadButton")
 
     // 2. 燈箱大圖功能
     const lightbox = document.getElementById('lightbox');
@@ -79,6 +80,19 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     if (providerSelect) providerSelect.addEventListener("change", updateProviderFields);
     if (generateButton) generateButton.addEventListener("click", generateImage);
+    if (downloadButton) {
+        downloadButton.addEventListener("click", () => {
+            if (resultImage && resultImage.src) {
+                const a = document.createElement("a");
+                a.href = resultImage.src;
+                // Azure DALL-E 回傳的是 base64，可以直接下載
+                a.download = `room-style-${selectedPreset}-${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        });
+    }
 
     // 6. 初始狀態設定
     if (previewImage) previewImage.style.display = "none";
