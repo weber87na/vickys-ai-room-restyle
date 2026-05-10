@@ -18,9 +18,10 @@ window.addEventListener('DOMContentLoaded', function() {
     const lightboxImg = document.getElementById('lightboxImg');
     const previewImage = document.getElementById('previewImage');
     const resultImage = document.getElementById('resultImage');
+    const stylePreviewImg = document.getElementById('stylePreviewImg');
 
     if (lightbox && lightboxImg) {
-        [previewImage, resultImage].forEach(img => {
+        [previewImage, resultImage, stylePreviewImg].forEach(img => {
             if (!img) return;
             img.addEventListener('click', function() {
                 if (this.src && this.style.display !== 'none' && this.src !== window.location.href) {
@@ -83,6 +84,16 @@ window.addEventListener('DOMContentLoaded', function() {
     if (previewImage) previewImage.style.display = "none";
     if (resultImage) resultImage.style.display = "none";
     updateProviderFields();
+    setActivePreset(selectedPreset);
+
+    // 7. 載入預設圖片
+    fetch('images/範例原圖.png')
+        .then(response => response.blob())
+        .then(blob => {
+            const file = new File([blob], '範例原圖.png', { type: 'image/png' });
+            updatePreview(file);
+        })
+        .catch(err => console.error("預設圖片載入失敗", err));
 });
 
 // 全域常數與變數
@@ -237,9 +248,24 @@ function handleFileSelection(event) {
 function setActivePreset(presetKey) {
     selectedPreset = presetKey
     const presetButtons = document.querySelectorAll(".preset-button")
+    let styleName = ""
+    
     presetButtons.forEach((button) => {
-        button.classList.toggle("active", button.dataset.preset === presetKey)
+        const isActive = button.dataset.preset === presetKey
+        button.classList.toggle("active", isActive)
+        if (isActive) {
+            const strongTag = button.querySelector("strong")
+            if (strongTag) styleName = strongTag.textContent.trim()
+        }
     })
+
+    const stylePreview = document.getElementById("stylePreview")
+    const stylePreviewImg = document.getElementById("stylePreviewImg")
+    if (stylePreview && stylePreviewImg && styleName) {
+        stylePreviewImg.onerror = () => { stylePreview.style.display = "none" }
+        stylePreviewImg.onload = () => { stylePreview.style.display = "block" }
+        stylePreviewImg.src = `images/${styleName}.png`
+    }
 }
 
 window.addEventListener("beforeunload", stopCameraStream)

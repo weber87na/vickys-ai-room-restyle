@@ -263,6 +263,32 @@
       box-shadow: inset 0 0 0 1px rgba(216, 143, 164, 0.16);
     }
 
+    .style-preview {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(186, 153, 166, 0.2);
+      display: none;
+    }
+
+    .style-preview h4 {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .style-preview img {
+      width: 100%;
+      height: auto;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(186, 153, 166, 0.15);
+      background: transparent;
+      cursor: zoom-in;
+    }
+
     .ghost-button:hover,
     .primary-button:hover,
     .preset-button:hover {
@@ -400,6 +426,24 @@
 
     .image-card img {
       cursor: zoom-in;
+    }
+
+    .floating-mascot {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .floating-mascot img {
+      width: 150px;
+      height: auto;
+      aspect-ratio: auto;
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      filter: drop-shadow(0 12px 24px rgba(105, 60, 77, 0.2));
     }
 
     @media (min-width: 720px) {
@@ -622,6 +666,11 @@
               <span>馬卡龍色系、圓潤家具、夢幻趣味</span>
             </button>
           </div>
+
+          <div class="style-preview" id="stylePreview">
+            <h4>風格示意預覽</h4>
+            <img id="stylePreviewImg" alt="風格預覽圖" />
+          </div>
         </div>
 
         <div class="section">
@@ -685,6 +734,10 @@
 
   <div id="lightbox" class="lightbox">
     <img id="lightboxImg" src="" alt="放大圖片">
+  </div>
+
+  <div class="floating-mascot">
+    <img src="images/vicky.png" alt="Vicky mascot">
   </div>
 
   <script src="app.js"></script>
