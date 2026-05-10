@@ -86,7 +86,7 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // 全域常數與變數
-const FIXED_AZURE_OPENAI_URL = "https://wchsi-mg24ws7f-eastus2.cognitiveservices.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-02-01"
+const FIXED_AZURE_OPENAI_URL = "https://wchsi-mg24ws7f-eastus2.cognitiveservices.azure.com/openai/deployments/gpt-image-2/images/edits?api-version=2025-04-01-preview"
 
 const presetPrompts = {
     "modern-luxe": "modern luxury interior, warm layered lighting, marble and wood finishes, elegant custom furniture, refined hotel residence mood",
@@ -280,32 +280,19 @@ async function generateImage() {
 
         let response, data
         if (provider === "azure") {
-            const imageBase64 = await new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onload = () => resolve(reader.result.split(",")[1])
-                reader.onerror = reject
-                reader.readAsDataURL(file)
-            })
-
-            const jsonBody = {
-                model,
-                image: imageBase64,
-                prompt: `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:
-
-${fullPrompt}
-
-Maintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. 
-AVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`,
-                size: "1024x1024"
-            }
+            const formData = new FormData()
+            formData.append("model", model)
+            formData.append("image", file)
+            formData.append("n", "1")
+            formData.append("prompt", `CRITICAL INSTRUCTION: Analyze the provided room image and preserve its EXACT geometry, structural layout, bounding boxes, object placements, perspective, and room dimensions. Do not move, add, or remove windows, walls, doors, or key pieces of furniture. YOUR ONLY TASK is to change the surface materials, textures, lighting, and decorative style to match the following description:\n\n${fullPrompt}\n\nMaintain 100% of the original spatial composition. ultra realistic, photorealistic, interior design, architecture visualization, 4k. \nAVOID / NEGATIVE: distorted, messy, low resolution, blurry, dark, deformed furniture, extra legs on chairs, weird shadows, cluttered, ugly, low quality.`)
+            formData.append("size", "1024x1024")
 
             response = await fetch(FIXED_AZURE_OPENAI_URL, {
                 method: "POST",
                 headers: {
-                    "api-key": apiKey,
-                    "Content-Type": "application/json"
+                    "api-key": apiKey
                 },
-                body: JSON.stringify(jsonBody)
+                body: formData
             })
         } else {
             const formData = new FormData()
