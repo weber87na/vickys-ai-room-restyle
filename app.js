@@ -101,13 +101,48 @@ window.addEventListener('DOMContentLoaded', function() {
     setActivePreset(selectedPreset);
 
     // 7. 載入預設圖片
-    fetch('images/範例原圖.png')
+    const defaultImage = fetch('images/範例原圖.png')
         .then(response => response.blob())
         .then(blob => {
             const file = new File([blob], '範例原圖.png', { type: 'image/png' });
             updatePreview(file);
         })
         .catch(err => console.error("預設圖片載入失敗", err));
+
+    // 8. 綁定全域圖片 Skeleton 載入效果
+    document.querySelectorAll('img').forEach(img => {
+        if (!img.complete) {
+            img.classList.add('skeleton');
+            img.addEventListener('load', () => img.classList.remove('skeleton'));
+            img.addEventListener('error', () => img.classList.remove('skeleton'));
+        }
+    });
+
+    // 監聽後續新增或變更 srcs 的圖片
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                const img = mutation.target;
+                
+                // 忽略生成圖片時的 1x1 透明佔位圖，避免瞬間被視為載入完成而移除 skeleton
+                if (img.src.includes("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=")) {
+                    return;
+                }
+
+                if (!img.complete) {
+                    img.classList.add('skeleton');
+                    img.addEventListener('load', () => img.classList.remove('skeleton'), { once: true });
+                    img.addEventListener('error', () => img.classList.remove('skeleton'), { once: true });
+                } else {
+                    img.classList.remove('skeleton');
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('img').forEach(img => {
+        observer.observe(img, { attributes: true });
+    });
 });
 
 // 全域常數與變數
@@ -318,6 +353,15 @@ async function generateImage() {
             generateButton.textContent = "生成中..."
         }
         setStatus("正在上傳圖片並生成風格圖...")
+        
+        // 生成時顯示 skeleton 佔位
+        if (resultImage) {
+            // 使用 1x1 透明圖片避免出現破圖圖示
+            resultImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            resultImage.classList.add("skeleton")
+            resultImage.style.display = "block"
+        }
+        if (resultPlaceholder) resultPlaceholder.style.display = "none"
 
         const presetPrompt = presetPrompts[selectedPreset]
         const fullPrompt = [presetPrompt, prompt].filter(Boolean).join(", ")
