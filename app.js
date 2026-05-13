@@ -143,6 +143,16 @@ window.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('img').forEach(img => {
         observer.observe(img, { attributes: true });
     });
+
+    // 9. 展開收起面板的邏輯
+    document.querySelectorAll('.section-header.toggle-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const section = header.closest('.section');
+            if (section) {
+                section.classList.toggle('collapsed');
+            }
+        });
+    });
 });
 
 // 全域常數與變數

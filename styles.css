@@ -180,6 +180,25 @@ img.skeleton {
   margin-bottom: 10px;
 }
 
+.section-header.toggle-header {
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+}
+
+.toggle-icon {
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.section.collapsed .toggle-icon {
+  transform: rotate(-90deg);
+}
+
+.section.collapsed .section-content {
+  display: none;
+}
+
 .section-header h3 {
   font-size: 15px;
 }

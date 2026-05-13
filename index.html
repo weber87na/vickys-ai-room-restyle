@@ -30,11 +30,15 @@
       <section class="panel controls">
 
         <div class="section">
-          <div class="section-header">
-            <h3>模型服務</h3>
-            <span>OpenAI 或 Azure OpenAI</span>
+          <div class="section-header toggle-header">
+            <div style="display: flex; align-items: baseline; gap: 12px;">
+              <h3>模型服務</h3>
+              <span>OpenAI 或 Azure OpenAI</span>
+            </div>
+            <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
 
+          <div class="section-content">
           <div class="provider-grid">
             <div class="field">
               <label for="providerSelect">Provider</label>
@@ -54,31 +58,37 @@
           </div>
 
           <p class="helper-text">切換到 Azure OpenAI 時，系統會自動使用你指定的固定 Azure 路徑，你只需要填入 API Key。</p>
+
+          <div style="margin-top: 16px;">
+            <div class="section-header" style="margin-bottom: 0;">
+              <h3>OpenAI API Key</h3>
+              <span id="apiKeyHint">只會用在這次請求</span>
+            </div>
+
+            <div style="display:flex;align-items:center;position:relative;margin-top:10px;">
+              <input type="password"
+                id="apiKeyInput"
+                placeholder="貼上你的 OpenAI API Key"
+                style="padding-right:44px; flex: 1; margin-top: 0;" />
+              <button type="button" id="toggleApiKey" aria-label="顯示/隱藏 API Key" style="position:absolute;right:8px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;height:100%;">
+                <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#967d87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
+              </button>
+            </div>
+          </div>
+
+          </div>
         </div>
 
         <div class="section">
-          <div class="section-header">
-            <h3>OpenAI API Key</h3>
-            <span id="apiKeyHint">只會用在這次請求</span>
+          <div class="section-header toggle-header">
+            <div style="display: flex; align-items: baseline; gap: 12px;">
+              <h3>房間照片</h3>
+              <span>手機可直接拍照</span>
+            </div>
+            <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
 
-          <div style="display:flex;align-items:center;position:relative;margin-top:10px;">
-            <input type="password"
-              id="apiKeyInput"
-              placeholder="貼上你的 OpenAI API Key"
-              style="padding-right:44px; flex: 1; margin-top: 0;" />
-            <button type="button" id="toggleApiKey" aria-label="顯示/隱藏 API Key" style="position:absolute;right:8px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;height:100%;">
-              <svg id="eyeIcon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#967d87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="8" ry="5"/><circle cx="12" cy="12" r="2.5"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-header">
-            <h3>房間照片</h3>
-            <span>手機可直接拍照</span>
-          </div>
-
+          <div class="section-content">
           <div class="upload-actions">
             <button type="button"
               class="ghost-button"
@@ -104,14 +114,19 @@
             capture="environment" />
 
           <p class="helper-text">支援 JPG、PNG。相機按鈕在大多數手機瀏覽器會直接開啟後鏡頭。</p>
+          </div>
         </div>
 
         <div class="section">
-          <div class="section-header">
-            <h3>快速風格</h3>
-            <span>可先選一種，再微調描述</span>
+          <div class="section-header toggle-header">
+            <div style="display: flex; align-items: baseline; gap: 12px;">
+              <h3>快速風格</h3>
+              <span>可先選一種，再微調描述</span>
+            </div>
+            <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
 
+          <div class="section-content">
           <div class="preset-grid"
             id="presetGrid">
             <button type="button"
@@ -203,6 +218,7 @@
           <div class="style-preview" id="stylePreview">
             <h4>風格示意預覽</h4>
             <img id="stylePreviewImg" alt="風格預覽圖" />
+          </div>
           </div>
         </div>
 
