@@ -101,10 +101,10 @@ window.addEventListener('DOMContentLoaded', function() {
     setActivePreset(selectedPreset);
 
     // 7. 載入預設圖片
-    const defaultImage = fetch('images/範例原圖.png')
+    const defaultImage = fetch('images/範例原圖.webp')
         .then(response => response.blob())
         .then(blob => {
-            const file = new File([blob], '範例原圖.png', { type: 'image/png' });
+            const file = new File([blob], '範例原圖.webp', { type: 'image/webp' });
             updatePreview(file);
         })
         .catch(err => console.error("預設圖片載入失敗", err));
@@ -317,7 +317,7 @@ function setActivePreset(presetKey) {
     if (stylePreview && stylePreviewImg && styleName) {
         stylePreviewImg.onerror = () => { stylePreview.style.display = "none" }
         stylePreviewImg.onload = () => { stylePreview.style.display = "block" }
-        stylePreviewImg.src = `images/${styleName}.png`
+        stylePreviewImg.src = `images/${styleName}.webp`
     }
 }
 
